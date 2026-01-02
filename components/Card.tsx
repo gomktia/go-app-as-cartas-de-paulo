@@ -1,12 +1,11 @@
 
 import React from 'react';
-import { Product, PlanTier } from '../types';
+import { Product } from '../types';
 import { Lock, FileText, Headphones, Play, BookOpen } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 
 interface CardProps {
   product: Product;
-  userPlan: PlanTier;
   isUpsellOwned: boolean;
   onPdfClick: (product: Product) => void;
   onAudioClick: (product: Product) => void;
@@ -15,7 +14,6 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({
   product,
-  userPlan,
   isUpsellOwned,
   onPdfClick,
   onAudioClick,
@@ -23,11 +21,9 @@ const Card: React.FC<CardProps> = ({
 }) => {
   const { t } = useTranslation();
   const isLetter = product.category === 'LETTER';
-  
-  // Logic for Full Card Locking (Bonuses and Upsells)
-  const isFullyLocked = 
-    (product.tier === PlanTier.PREMIUM && userPlan === PlanTier.BASIC) ||
-    (product.category === 'UPSELL' && !isUpsellOwned);
+
+  // Only upsells are locked (if not owned)
+  const isFullyLocked = product.category === 'UPSELL' && !isUpsellOwned;
 
   // --- RENDER FOR LETTERS (Open Folder) ---
   if (isLetter) {

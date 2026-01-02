@@ -6,7 +6,7 @@ import Section from './components/Section';
 import UpgradeModal from './components/UpgradeModal';
 import AdminPanel from './components/AdminPanel';
 import LanguageSelector from './components/LanguageSelector';
-import { PlanTier, Product, UserState, Chapter } from './types';
+import { Product, Chapter } from './types';
 import { LayoutDashboard, LogOut, User, Database, Settings, ArrowLeft, Book, Library, FileText, Headphones, PlayCircle, X } from 'lucide-react';
 import { supabase } from './lib/supabaseClient';
 import { LanguageProvider } from './i18n/LanguageContext';
@@ -352,7 +352,6 @@ function AppContent() {
                                 <Card
                                     key={product.id}
                                     product={product}
-                                    userPlan={PlanTier.PREMIUM}
                                     isUpsellOwned={false}
                                     onPdfClick={() => { }}
                                     onAudioClick={() => { }}
@@ -370,7 +369,6 @@ function AppContent() {
                                 <Card
                                     key={product.id}
                                     product={product}
-                                    userPlan={PlanTier.PREMIUM}
                                     isUpsellOwned={ownedUpsells.includes(product.id)}
                                     onPdfClick={() => { }}
                                     onAudioClick={() => { }}
@@ -402,7 +400,6 @@ function AppContent() {
                                 <Card
                                     key={product.id}
                                     product={product}
-                                    userPlan={PlanTier.PREMIUM}
                                     isUpsellOwned={false}
                                     onPdfClick={() => handlePdfClick(product)}
                                     onAudioClick={handleAudioClick}
