@@ -240,26 +240,8 @@ export const PRODUCTS: Product[] = [
   }
 ];
 
-export const MOCK_CHAPTERS: Chapter[] = [
-  // --- 2 CORÍNTIOS (Completo) ---
-  { id: '2cor-1', product_id: 'letter-2corintios', title: 'Capítulo 1: Consolação na Tribulação', order_index: 1, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-2', product_id: 'letter-2corintios', title: 'Capítulo 2: Perdão e Restauração', order_index: 2, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-3', product_id: 'letter-2corintios', title: 'Capítulo 3: A Glória do Novo Pacto', order_index: 3, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-4', product_id: 'letter-2corintios', title: 'Capítulo 4: Tesouros em Vasos de Barro', order_index: 4, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-5', product_id: 'letter-2corintios', title: 'Capítulo 5: A Morada Celestial', order_index: 5, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-6', product_id: 'letter-2corintios', title: 'Capítulo 6: O Ministério e a Separação', order_index: 6, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-7', product_id: 'letter-2corintios', title: 'Capítulo 7: Alegria pela Restauração', order_index: 7, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-8', product_id: 'letter-2corintios', title: 'Capítulo 8: A Generosidade da Graça', order_index: 8, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-9', product_id: 'letter-2corintios', title: 'Capítulo 9: A Bênção da Generosidade', order_index: 9, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-10', product_id: 'letter-2corintios', title: 'Capítulo 10: Defesa da Autoridade', order_index: 10, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-11', product_id: 'letter-2corintios', title: 'Capítulo 11: Paulo e os Falsos Apóstolos', order_index: 11, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-12', product_id: 'letter-2corintios', title: 'Capítulo 12: A Glória na Fraqueza', order_index: 12, pdf_url: '#', audio_url: '#' },
-  { id: '2cor-13', product_id: 'letter-2corintios', title: 'Capítulo 13: Exame Próprio e Bênção', order_index: 13, pdf_url: '#', audio_url: '#' },
-  
-  // --- 1 CORÍNTIOS (Início e Fim disponíveis) ---
-  { id: '1cor-1', product_id: 'letter-1corintios', title: 'Capítulo 1: Sabedoria Humana vs Divina', order_index: 1, pdf_url: '#', audio_url: '#' },
-  { id: '1cor-16', product_id: 'letter-1corintios', title: 'Capítulo 16: Instruções Finais', order_index: 16, pdf_url: '#', audio_url: '#' },
-];
+// Mock chapters removed - using only real chapters from database
+export const MOCK_CHAPTERS: Chapter[] = [];
 
 export const ICONS_MAP: Record<string, React.ReactNode> = {
   PDF: <FileText className="w-4 h-4" />,
