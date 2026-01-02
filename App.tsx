@@ -172,9 +172,9 @@ function AppContent() {
             console.log('📖 Abrindo produto:', { title, language, pdfUrl, productId });
         }
 
-        // Use Google Docs Viewer for better mobile compatibility
+        // Use Mozilla PDF.js viewer for better compatibility across all devices
         const encodedPdfUrl = encodeURIComponent(pdfUrl);
-        const viewerUrl = `https://docs.google.com/viewer?url=${encodedPdfUrl}&embedded=true`;
+        const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedPdfUrl}`;
 
         setReadingDoc({ url: viewerUrl, title });
     };
