@@ -68,26 +68,45 @@ async function syncChapters() {
   console.log('🔄 Sincronizando capítulos do Storage para o banco de dados...\n');
 
   try {
-    // 1. List all files in Storage
+    // 1. List all files in Storage (both originals and translated)
     console.log('📁 Listando PDFs no Storage...');
 
-    const { data: files, error: listError } = await supabase.storage
+    // List originals
+    const { data: originalsFiles, error: originalsError } = await supabase.storage
       .from(BUCKET)
       .list('originals', {
         limit: 1000,
         sortBy: { column: 'name', order: 'asc' }
       });
 
-    if (listError) {
-      throw new Error(`Erro ao listar arquivos: ${listError.message}`);
+    if (originalsError) {
+      throw new Error(`Erro ao listar originals: ${originalsError.message}`);
     }
 
-    if (!files || files.length === 0) {
+    // List translated
+    const { data: translatedFiles, error: translatedError } = await supabase.storage
+      .from(BUCKET)
+      .list('translated', {
+        limit: 1000,
+        sortBy: { column: 'name', order: 'asc' }
+      });
+
+    if (translatedError) {
+      throw new Error(`Erro ao listar translated: ${translatedError.message}`);
+    }
+
+    // Combine and mark folder
+    const files = [
+      ...(originalsFiles || []).map(f => ({ ...f, folder: 'originals' })),
+      ...(translatedFiles || []).map(f => ({ ...f, folder: 'translated' }))
+    ];
+
+    if (files.length === 0) {
       console.log('⚠️  Nenhum arquivo encontrado no Storage');
       return;
     }
 
-    console.log(`✅ Encontrados ${files.length} arquivos no Storage\n`);
+    console.log(`✅ Encontrados ${files.length} arquivos no Storage (${originalsFiles?.length || 0} originals + ${translatedFiles?.length || 0} translated)\n`);
 
     // 2. Filter only chapter files (with -cap- in name)
     const chapterFiles = files.filter(f =>
@@ -118,8 +137,8 @@ async function syncChapters() {
 
       const { productId, language, chapterNum, filename } = parsed;
 
-      // Construct Storage URL
-      const pdfUrl = `${STORAGE_BASE}/originals/${filename}`;
+      // Construct Storage URL using the correct folder
+      const pdfUrl = `${STORAGE_BASE}/${file.folder}/${filename}`;
 
       // Generate title
       const title = generateChapterTitle(productId, chapterNum, language);
