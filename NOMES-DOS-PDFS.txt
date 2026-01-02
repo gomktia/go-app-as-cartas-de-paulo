@@ -1,0 +1,103 @@
+═══════════════════════════════════════════════════════════════
+  📋 NOMES EXATOS PARA OS PDFS
+  ⚠️  COPIE EXATAMENTE! Maiúsculas/minúsculas fazem diferença!
+═══════════════════════════════════════════════════════════════
+
+💡 COMO USAR:
+   Português: {id}.pdf
+   Espanhol:  {id}-es.pdf
+   Inglês:    {id}-en.pdf
+   Francês:   {id}-fr.pdf
+
+───────────────────────────────────────────────────────────────
+CARTAS PAULINAS (13 cartas)
+───────────────────────────────────────────────────────────────
+
+letter-romanos
+   Português: letter-romanos.pdf
+   Espanhol:  letter-romanos-es.pdf
+   Inglês:    letter-romanos-en.pdf
+   Francês:   letter-romanos-fr.pdf
+
+letter-1corintios
+   Português: letter-1corintios.pdf
+   Espanhol:  letter-1corintios-es.pdf
+
+letter-2corintios
+   Português: letter-2corintios.pdf
+   Espanhol:  letter-2corintios-es.pdf
+
+letter-galatas
+   Português: letter-galatas.pdf
+   Espanhol:  letter-galatas-es.pdf
+
+letter-efesios
+   Português: letter-efesios.pdf
+   Espanhol:  letter-efesios-es.pdf
+
+letter-filipenses
+   Português: letter-filipenses.pdf
+   Espanhol:  letter-filipenses-es.pdf
+
+letter-colossenses
+   Português: letter-colossenses.pdf
+   Espanhol:  letter-colossenses-es.pdf
+
+letter-1tessalonicenses
+   Português: letter-1tessalonicenses.pdf
+   Espanhol:  letter-1tessalonicenses-es.pdf
+
+letter-2tessalonicenses
+   Português: letter-2tessalonicenses.pdf
+   Espanhol:  letter-2tessalonicenses-es.pdf
+
+letter-1timoteo
+   Português: letter-1timoteo.pdf
+   Espanhol:  letter-1timoteo-es.pdf
+
+letter-2timoteo
+   Português: letter-2timoteo.pdf
+   Espanhol:  letter-2timoteo-es.pdf
+
+letter-tito
+   Português: letter-tito.pdf
+   Espanhol:  letter-tito-es.pdf
+
+letter-filemon
+   Português: letter-filemon.pdf
+   Espanhol:  letter-filemon-es.pdf
+
+───────────────────────────────────────────────────────────────
+BÔNUS PREMIUM (4 estudos)
+───────────────────────────────────────────────────────────────
+
+premium-pedro
+premium-temor
+premium-oracao
+premium-santidade
+
+───────────────────────────────────────────────────────────────
+ARSENAL ESPIRITUAL / UPSELLS (4 produtos)
+───────────────────────────────────────────────────────────────
+
+upsell-uncao
+upsell-apocalipse
+upsell-pregador
+upsell-mulher
+
+═══════════════════════════════════════════════════════════════
+TOTAL: 21 produtos
+═══════════════════════════════════════════════════════════════
+
+✅ CHECKLIST RÁPIDO:
+   1. Renomeie o PDF com o ID exato (copie/cole!)
+   2. Adicione -es, -en ou -fr para traduções
+   3. Coloque na pasta pdfs-to-upload/
+   4. Execute: node upload-pdfs.mjs
+   5. Pronto!
+
+⚠️  LEMBRE-SE:
+   ✅ letter-efesios.pdf (correto)
+   ❌ Letter-Efesios.pdf (errado)
+   ❌ LETTER-EFESIOS.pdf (errado)
+   ❌ letter_efesios.pdf (errado)
