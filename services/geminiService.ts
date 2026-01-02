@@ -1,22 +1,32 @@
 import { GoogleGenAI } from "@google/genai";
 
 class GeminiService {
-  private ai: GoogleGenAI;
+  private ai: GoogleGenAI | null = null;
+  private apiKey: string | null = null;
 
   constructor() {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error('VITE_GEMINI_API_KEY is not configured');
+    this.apiKey = import.meta.env.VITE_GEMINI_API_KEY || null;
+    if (this.apiKey) {
+      this.ai = new GoogleGenAI({ apiKey: this.apiKey });
+      console.log('✅ Gemini AI inicializado');
+    } else {
+      console.warn('⚠️ VITE_GEMINI_API_KEY não configurada - funcionalidades de IA desabilitadas');
     }
-    this.ai = new GoogleGenAI({ apiKey });
+  }
+
+  private checkAvailability() {
+    if (!this.ai) {
+      throw new Error('Gemini AI não está configurado. Configure VITE_GEMINI_API_KEY no .env');
+    }
   }
 
   /**
    * Generate image using Gemini Flash Image model
    */
   async generateImage(prompt: string, aspectRatio: "3:4" | "16:9" = "3:4"): Promise<File | null> {
+    this.checkAvailability();
     try {
-      const response = await this.ai.models.generateContent({
+      const response = await this.ai!.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: {
           parts: [{ text: prompt }]
@@ -57,6 +67,7 @@ class GeminiService {
     targetLanguage: string,
     context?: string
   ): Promise<string> {
+    this.checkAvailability();
     try {
       const prompt = `Translate the following text to ${targetLanguage}.
 ${context ? `Context: ${context}` : ''}
@@ -70,7 +81,7 @@ Rules:
 Text to translate:
 ${text}`;
 
-      const response = await this.ai.models.generateContent({
+      const response = await this.ai!.models.generateContent({
         model: 'gemini-2.0-flash-exp',
         contents: {
           parts: [{ text: prompt }]
@@ -92,6 +103,7 @@ ${text}`;
     texts: Array<{ key: string; text: string }>,
     targetLanguage: string
   ): Promise<Record<string, string>> {
+    this.checkAvailability();
     try {
       const textList = texts.map((item, idx) => `[${idx}] ${item.text}`).join('\n');
 
@@ -102,7 +114,7 @@ ${text}`;
 Items to translate:
 ${textList}`;
 
-      const response = await this.ai.models.generateContent({
+      const response = await this.ai!.models.generateContent({
         model: 'gemini-2.0-flash-exp',
         contents: {
           parts: [{ text: prompt }]
@@ -136,8 +148,9 @@ ${textList}`;
    * Extract text from a document (PDF) using Gemini Vision
    */
   async extractTextFromDocument(base64Data: string, prompt: string): Promise<string> {
+    this.checkAvailability();
     try {
-      const response = await this.ai.models.generateContent({
+      const response = await this.ai!.models.generateContent({
         model: 'gemini-2.0-flash-exp',
         contents: {
           parts: [
