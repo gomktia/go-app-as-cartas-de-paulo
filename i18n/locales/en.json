@@ -23,11 +23,10 @@
     "mainModuleSubtitle": "Start Here",
     "mainCollection": "The Letters of Paul",
     "mainCollectionDesc": "13 Letters • In-Depth Studies • Audios",
-    "premiumContent": "Premium Content",
-    "premiumContentSubtitle": "Exclusive Bonuses for VIP Members",
-    "spiritualArsenal": "Spiritual Arsenal",
-    "spiritualArsenalSubtitle": "Complements for your journey",
-    "unlockAll": "Unlock All"
+    "bonusContent": "Bonus Content",
+    "bonusContentSubtitle": "Supplementary material and additional studies",
+    "upsells": "Additional Resources",
+    "upsellsSubtitle": "Supplements to deepen your spiritual journey"
   },
   "buttons": {
     "openBook": "Open Book",

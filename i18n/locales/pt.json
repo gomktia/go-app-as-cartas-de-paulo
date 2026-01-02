@@ -23,11 +23,10 @@
     "mainModuleSubtitle": "Comece por aqui",
     "mainCollection": "As Cartas de Paulo",
     "mainCollectionDesc": "13 Cartas • Estudos Profundos • Áudios",
-    "premiumContent": "Conteúdos Premium",
-    "premiumContentSubtitle": "Bônus Exclusivos para membros vips",
-    "spiritualArsenal": "Arsenal Espiritual",
-    "spiritualArsenalSubtitle": "Complementos para sua jornada",
-    "unlockAll": "Desbloquear Tudo"
+    "bonusContent": "Conteúdo Bônus",
+    "bonusContentSubtitle": "Material complementar e estudos adicionais",
+    "upsells": "Recursos Adicionais",
+    "upsellsSubtitle": "Complementos para aprofundar sua jornada espiritual"
   },
   "buttons": {
     "openBook": "Abrir Livro",

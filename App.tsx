@@ -7,7 +7,7 @@ import UpgradeModal from './components/UpgradeModal';
 import AdminPanel from './components/AdminPanel';
 import LanguageSelector from './components/LanguageSelector';
 import { PlanTier, Product, UserState, Chapter } from './types';
-import { LayoutDashboard, LogOut, ShieldCheck, User, Database, Settings, ArrowLeft, Book, Library, FileText, Headphones, Lock, PlayCircle, ExternalLink, X } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Database, Settings, ArrowLeft, Book, Library, FileText, Headphones, PlayCircle, ExternalLink, X } from 'lucide-react';
 import { supabase } from './lib/supabaseClient';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { useTranslation } from './i18n/useTranslation';
@@ -20,13 +20,8 @@ type ViewState = 'HOME' | 'COLLECTION' | 'CHAPTERS' | 'READER';
 function AppContent() {
     const { t, language } = useTranslation();
 
-    // State for the user's current plan and owned upsells
-    // LATAM: Todos têm acesso PREMIUM (13 Cartas + 4 Bônus)
-    // Upsells continuam bloqueados e vendidos separadamente
-    const [userState, setUserState] = useState<UserState>({
-        plan: PlanTier.PREMIUM,
-        ownedUpsells: []
-    });
+    // State for owned upsells (no plan tiers anymore - everything is accessible)
+    const [ownedUpsells, setOwnedUpsells] = useState<string[]>([]);
 
     // App Navigation State
     const [currentView, setCurrentView] = useState<ViewState>('HOME');
@@ -192,14 +187,10 @@ function AppContent() {
     };
 
     const handleAudioClick = (product: Product) => {
-        if (userState.plan === PlanTier.BASIC) {
-            setModalConfig({ isOpen: true, type: 'UPGRADE_PLAN' });
+        if (product.audioUrl && product.audioUrl !== '#') {
+            window.open(product.audioUrl, '_blank');
         } else {
-            if (product.audioUrl && product.audioUrl !== '#') {
-                window.open(product.audioUrl, '_blank');
-            } else {
-                alert(t('alerts.audioUnavailable', { title: product.title }));
-            }
+            alert(t('alerts.audioUnavailable', { title: product.title }));
         }
     };
 
@@ -234,17 +225,9 @@ function AppContent() {
             return;
         }
 
-        // 2. Logic for Bonuses/Upsells
-        const isLocked =
-            (product.tier === PlanTier.PREMIUM && userState.plan === PlanTier.BASIC) ||
-            (product.category === 'UPSELL' && !userState.ownedUpsells.includes(product.id));
-
-        if (isLocked) {
-            if (product.category === 'UPSELL') {
-                setModalConfig({ isOpen: true, type: 'BUY_UPSELL', product });
-            } else {
-                setModalConfig({ isOpen: true, type: 'UPGRADE_PLAN' });
-            }
+        // 2. Logic for Upsells (only upsells are locked)
+        if (product.category === 'UPSELL' && !ownedUpsells.includes(product.id)) {
+            setModalConfig({ isOpen: true, type: 'BUY_UPSELL', product });
             return;
         }
 
@@ -275,23 +258,13 @@ function AppContent() {
         }
     };
 
-    const openUpgradeModal = () => {
-        setModalConfig({ isOpen: true, type: 'UPGRADE_PLAN' });
-    };
-
     const closeModal = () => {
         setModalConfig({ ...modalConfig, isOpen: false });
     };
 
     const handleConfirmPurchase = () => {
-        if (modalConfig.type === 'UPGRADE_PLAN') {
-            setUserState(prev => ({ ...prev, plan: PlanTier.PREMIUM }));
-            alert(t('alerts.premiumUpgradeSuccess'));
-        } else if (modalConfig.type === 'BUY_UPSELL' && modalConfig.product) {
-            setUserState(prev => ({
-                ...prev,
-                ownedUpsells: [...prev.ownedUpsells, modalConfig.product!.id]
-            }));
+        if (modalConfig.type === 'BUY_UPSELL' && modalConfig.product) {
+            setOwnedUpsells(prev => [...prev, modalConfig.product!.id]);
             alert(t('alerts.upsellPurchaseSuccess', { title: modalConfig.product.title }));
         }
         closeModal();
@@ -326,19 +299,6 @@ function AppContent() {
 
                     <div className="flex items-center gap-4">
                         <LanguageSelector />
-
-                        <div
-                            onClick={userState.plan === PlanTier.BASIC ? openUpgradeModal : undefined}
-                            className={`
-                    px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-2 cursor-pointer transition-all
-                    ${userState.plan === PlanTier.PREMIUM
-                                    ? 'bg-brand-900/20 border-brand-500/30 text-brand-500'
-                                    : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
-                                }`}
-                        >
-                            <ShieldCheck className="w-3 h-3" />
-                            {userState.plan === PlanTier.PREMIUM ? t('header.memberPremium') : t('header.memberBasic')}
-                        </div>
 
                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 cursor-pointer hover:bg-zinc-700 transition-colors">
                             <User className="w-4 h-4 text-zinc-400" />
@@ -390,20 +350,16 @@ function AppContent() {
                             </div>
                         </Section>
 
-                        {/* 2. Premium Bonuses */}
+                        {/* 2. Bonus Content */}
                         <Section
-                            title={t('sections.premiumContent')}
-                            subtitle={t('sections.premiumContentSubtitle')}
-                            actionButton={userState.plan === PlanTier.BASIC ? {
-                                label: t('sections.unlockAll'),
-                                onClick: openUpgradeModal
-                            } : undefined}
+                            title={t('sections.bonusContent')}
+                            subtitle={t('sections.bonusContentSubtitle')}
                         >
                             {bonusProducts.map(product => (
                                 <Card
                                     key={product.id}
                                     product={product}
-                                    userPlan={userState.plan}
+                                    userPlan={PlanTier.PREMIUM}
                                     isUpsellOwned={false}
                                     onPdfClick={() => { }}
                                     onAudioClick={() => { }}
@@ -414,15 +370,15 @@ function AppContent() {
 
                         {/* 3. Upsells */}
                         <Section
-                            title={t('sections.spiritualArsenal')}
-                            subtitle={t('sections.spiritualArsenalSubtitle')}
+                            title={t('sections.upsells')}
+                            subtitle={t('sections.upsellsSubtitle')}
                         >
                             {upsellProducts.map(product => (
                                 <Card
                                     key={product.id}
                                     product={product}
-                                    userPlan={userState.plan}
-                                    isUpsellOwned={userState.ownedUpsells.includes(product.id)}
+                                    userPlan={PlanTier.PREMIUM}
+                                    isUpsellOwned={ownedUpsells.includes(product.id)}
                                     onPdfClick={() => { }}
                                     onAudioClick={() => { }}
                                     onCardClick={handleFullCardClick}
@@ -453,7 +409,7 @@ function AppContent() {
                                 <Card
                                     key={product.id}
                                     product={product}
-                                    userPlan={userState.plan}
+                                    userPlan={PlanTier.PREMIUM}
                                     isUpsellOwned={false}
                                     onPdfClick={() => handlePdfClick(product)}
                                     onAudioClick={handleAudioClick}
@@ -502,13 +458,10 @@ function AppContent() {
                                         )}
                                         {selectedBook.audioUrl && (
                                             <button
-                                                onClick={() => {
-                                                    if (userState.plan === PlanTier.BASIC) openUpgradeModal();
-                                                    else window.open(selectedBook.audioUrl, '_blank');
-                                                }}
+                                                onClick={() => window.open(selectedBook.audioUrl, '_blank')}
                                                 className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded text-sm font-bold flex items-center gap-2 transition-colors"
                                             >
-                                                {userState.plan === PlanTier.BASIC ? <Lock className="w-4 h-4 text-zinc-500" /> : <Headphones className="w-4 h-4 text-brand-500" />}
+                                                <Headphones className="w-4 h-4 text-brand-500" />
                                                 {t('buttons.completeAudio')}
                                             </button>
                                         )}
@@ -545,18 +498,16 @@ function AppContent() {
                                         {/* Audio Button */}
                                         <button
                                             onClick={() => {
-                                                if (userState.plan === PlanTier.BASIC) openUpgradeModal();
-                                                else if (chapter.audio_url && chapter.audio_url !== '#') window.open(chapter.audio_url, '_blank');
-                                                else alert(t('alerts.chapterAudioNotRegistered'));
+                                                if (chapter.audio_url && chapter.audio_url !== '#') {
+                                                    window.open(chapter.audio_url, '_blank');
+                                                } else {
+                                                    alert(t('alerts.chapterAudioNotRegistered'));
+                                                }
                                             }}
                                             className="p-2 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-lg text-zinc-400 hover:text-white transition-colors relative"
                                             title={t('buttons.listenAudio')}
                                         >
-                                            {userState.plan === PlanTier.BASIC ? (
-                                                <Lock className="w-5 h-5 text-zinc-600" />
-                                            ) : (
-                                                <PlayCircle className="w-5 h-5 text-brand-500" />
-                                            )}
+                                            <PlayCircle className="w-5 h-5 text-brand-500" />
                                         </button>
                                     </div>
                                 </div>

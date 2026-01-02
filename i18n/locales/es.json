@@ -23,11 +23,10 @@
     "mainModuleSubtitle": "Comience aquí",
     "mainCollection": "Las Cartas de Pablo",
     "mainCollectionDesc": "13 Cartas • Estudios Profundos • Audios",
-    "premiumContent": "Contenidos Premium",
-    "premiumContentSubtitle": "Bonos Exclusivos para miembros vips",
-    "spiritualArsenal": "Arsenal Espiritual",
-    "spiritualArsenalSubtitle": "Complementos para su jornada",
-    "unlockAll": "Desbloquear Todo"
+    "bonusContent": "Contenido Bonus",
+    "bonusContentSubtitle": "Material complementario y estudios adicionales",
+    "upsells": "Recursos Adicionales",
+    "upsellsSubtitle": "Complementos para profundizar su jornada espiritual"
   },
   "buttons": {
     "openBook": "Abrir Libro",
