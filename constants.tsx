@@ -153,42 +153,42 @@ export const PRODUCTS: Product[] = [
 
   // --- MÓDULO 2: Bônus Premium ---
   {
-    id: 'premium-pedro',
-    title: 'A História de Pedro',
-    subtitle: 'Do Pescador ao Apóstolo',
+    id: 'premium-matrimonio',
+    title: 'Pablo y el Matrimonio',
+    subtitle: 'Enseñanzas sobre el Matrimonio',
     category: 'BONUS',
     tier: PlanTier.PREMIUM,
-    description: 'Uma rede de pesca antiga na praia ao amanhecer, simbolizando o chamado de Pedro.',
+    description: 'Estudio profundo sobre las enseñanzas de Pablo acerca del matrimonio cristiano.',
     imageUrl: 'https://picsum.photos/id/1029/400/600',
     pdfUrl: '#'
   },
   {
-    id: 'premium-temor',
-    title: 'O Temor do Senhor',
-    subtitle: 'Estudo Teológico',
+    id: 'premium-culpa',
+    title: 'Pablo y la Culpa Religiosa',
+    subtitle: 'Libertad de la Culpa',
     category: 'BONUS',
     tier: PlanTier.PREMIUM,
-    description: 'Um monte alto coberto por nuvens e relâmpagos, representando a santidade e majestade de Deus.',
+    description: 'Cómo Pablo nos enseña a liberarnos de la culpa religiosa y vivir en gracia.',
     imageUrl: 'https://picsum.photos/id/1031/400/600',
     pdfUrl: '#'
   },
   {
-    id: 'premium-oracao',
-    title: 'Vida de Oração',
-    subtitle: 'Guia Prático',
+    id: 'premium-diadia',
+    title: 'Pablo en el Día a Día',
+    subtitle: 'Vida Cristiana Práctica',
     category: 'BONUS',
     tier: PlanTier.PREMIUM,
-    description: 'Mãos juntas em oração sob uma luz suave, simbolizando intimidade e comunhão espiritual.',
+    description: 'Aplicando las enseñanzas de Pablo en nuestra vida diaria y cotidiana.',
     imageUrl: 'https://picsum.photos/id/1032/400/600',
     pdfUrl: '#'
   },
   {
-    id: 'premium-santidade',
-    title: 'Vida de Santidade',
-    subtitle: 'Estudo Avançado',
+    id: 'premium-ansiedad',
+    title: 'Pablo y la Ansiedad',
+    subtitle: 'Paz en Medio de la Tormenta',
     category: 'BONUS',
     tier: PlanTier.PREMIUM,
-    description: 'Um lírio branco puro crescendo em meio a espinhos, representando a pureza e separação do mundo.',
+    description: 'Las enseñanzas de Pablo para vencer la ansiedad y encontrar paz en Dios.',
     imageUrl: 'https://picsum.photos/id/1033/400/600',
     pdfUrl: '#'
   },
