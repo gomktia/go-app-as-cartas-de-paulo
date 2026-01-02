@@ -7,7 +7,7 @@ import UpgradeModal from './components/UpgradeModal';
 import AdminPanel from './components/AdminPanel';
 import LanguageSelector from './components/LanguageSelector';
 import { PlanTier, Product, UserState, Chapter } from './types';
-import { LayoutDashboard, LogOut, User, Database, Settings, ArrowLeft, Book, Library, FileText, Headphones, PlayCircle, ExternalLink, X } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, Database, Settings, ArrowLeft, Book, Library, FileText, Headphones, PlayCircle, X } from 'lucide-react';
 import { supabase } from './lib/supabaseClient';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { useTranslation } from './i18n/useTranslation';
@@ -146,11 +146,6 @@ function AppContent() {
 
     // --- Actions ---
 
-    // Detect if user is on mobile device
-    const isMobile = () => {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    };
-
     const handlePdfClick = async (product: Product | Chapter) => {
         const title = product.title;
 
@@ -177,13 +172,11 @@ function AppContent() {
             console.log('📖 Abrindo produto:', { title, language, pdfUrl, productId });
         }
 
-        // On mobile, open PDF directly in new tab (iframes don't work well)
-        if (isMobile()) {
-            window.open(pdfUrl, '_blank');
-        } else {
-            // On desktop, use the reader overlay with iframe
-            setReadingDoc({ url: pdfUrl, title });
-        }
+        // Use Google Docs Viewer for better mobile compatibility
+        const encodedPdfUrl = encodeURIComponent(pdfUrl);
+        const viewerUrl = `https://docs.google.com/viewer?url=${encodedPdfUrl}&embedded=true`;
+
+        setReadingDoc({ url: viewerUrl, title });
     };
 
     const handleAudioClick = (product: Product) => {
@@ -573,22 +566,12 @@ function AppContent() {
                             <Book className="w-4 h-4 text-brand-500" />
                             {readingDoc.title}
                         </h3>
-                        <div className="flex items-center gap-2">
-                            <a
-                                href={readingDoc.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-3 py-1.5 text-xs font-bold bg-zinc-800 text-zinc-400 rounded hover:text-white flex items-center gap-2"
-                            >
-                                <ExternalLink className="w-3 h-3" /> {t('buttons.openExternally')}
-                            </a>
-                            <button
-                                onClick={() => setReadingDoc(null)}
-                                className="p-2 bg-zinc-800 hover:bg-red-900/50 hover:text-red-500 text-zinc-400 rounded-full transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => setReadingDoc(null)}
+                            className="p-2 bg-zinc-800 hover:bg-red-900/50 hover:text-red-500 text-zinc-400 rounded-full transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
 
                     <div className="flex-1 bg-zinc-900/50 relative">
