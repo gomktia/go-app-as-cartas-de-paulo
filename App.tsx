@@ -21,8 +21,10 @@ function AppContent() {
     const { t, language } = useTranslation();
 
     // State for the user's current plan and owned upsells
+    // LATAM: Todos têm acesso PREMIUM (13 Cartas + 4 Bônus)
+    // Upsells continuam bloqueados e vendidos separadamente
     const [userState, setUserState] = useState<UserState>({
-        plan: PlanTier.BASIC,
+        plan: PlanTier.PREMIUM,
         ownedUpsells: []
     });
 
