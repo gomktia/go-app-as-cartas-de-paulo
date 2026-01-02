@@ -149,6 +149,11 @@ function AppContent() {
 
     // --- Actions ---
 
+    // Detect if user is on mobile device
+    const isMobile = () => {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+
     const handlePdfClick = async (product: Product | Chapter) => {
         const title = product.title;
 
@@ -175,8 +180,13 @@ function AppContent() {
             console.log('📖 Abrindo produto:', { title, language, pdfUrl, productId });
         }
 
-        // Open the PDF
-        setReadingDoc({ url: pdfUrl, title });
+        // On mobile, open PDF directly in new tab (iframes don't work well)
+        if (isMobile()) {
+            window.open(pdfUrl, '_blank');
+        } else {
+            // On desktop, use the reader overlay with iframe
+            setReadingDoc({ url: pdfUrl, title });
+        }
     };
 
     const handleAudioClick = (product: Product) => {
