@@ -11,7 +11,7 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_KEY
 );
 
-const BUCKET = 'pdfs';
+const BUCKET = 'audios';
 const UPLOAD_DIR = './audios-to-upload';
 
 async function uploadAudios() {
@@ -41,7 +41,7 @@ async function uploadAudios() {
 
         const productId = match[1];
         const language = match[2] || 'pt';
-        const folder = language === 'pt' ? 'audios/originals' : 'audios/translated';
+        const folder = language === 'pt' ? 'originals' : 'translated';
         const storagePath = `${folder}/${filename}`;
 
         console.log(`📤 Uploading ${filename}...`);
@@ -63,7 +63,7 @@ async function uploadAudios() {
           console.log(`   ❌ ERRO: ${error.message}\n`);
           failed++;
         } else {
-          const publicUrl = `https://dtpydjllcreeibrrtcna.supabase.co/storage/v1/object/public/pdfs/${storagePath}`;
+          const publicUrl = `https://dtpydjllcreeibrrtcna.supabase.co/storage/v1/object/public/audios/${storagePath}`;
           console.log(`   ✅ Sucesso!`);
           console.log(`   🔗 ${publicUrl}\n`);
           uploaded++;
