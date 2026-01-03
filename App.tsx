@@ -159,17 +159,24 @@ function AppContent() {
             pdfUrl = (product as Chapter).pdf_url!;
             console.log('📖 Abrindo capítulo:', { title, pdfUrl });
         } else {
-            // For products, construct URL based on product ID and language
-            const productId = product.id;
-            const STORAGE_BASE = 'https://dtpydjllcreeibrrtcna.supabase.co/storage/v1/object/public/pdfs';
-
-            if (language === 'pt') {
-                pdfUrl = `${STORAGE_BASE}/originals/${productId}.pdf`;
+            // For products, use pdfUrl from database if available, otherwise construct it
+            const prod = product as Product;
+            if (prod.pdfUrl && prod.pdfUrl !== '#') {
+                pdfUrl = prod.pdfUrl;
+                console.log('📖 Abrindo produto (URL do DB):', { title, pdfUrl });
             } else {
-                pdfUrl = `${STORAGE_BASE}/translated/${productId}-${language}.pdf`;
-            }
+                // Fallback: construct URL based on product ID and language
+                const productId = product.id;
+                const STORAGE_BASE = 'https://dtpydjllcreeibrrtcna.supabase.co/storage/v1/object/public/pdfs';
 
-            console.log('📖 Abrindo produto:', { title, language, pdfUrl, productId });
+                if (language === 'pt') {
+                    pdfUrl = `${STORAGE_BASE}/originals/${productId}.pdf`;
+                } else {
+                    pdfUrl = `${STORAGE_BASE}/translated/${productId}-${language}.pdf`;
+                }
+
+                console.log('📖 Abrindo produto (URL construída):', { title, language, pdfUrl, productId });
+            }
         }
 
         // Use Mozilla PDF.js viewer for better compatibility across all devices
