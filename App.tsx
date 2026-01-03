@@ -391,9 +391,8 @@ function AppContent() {
                             </div>
                         </Section>
 
-                        {/* 2. Bonus Content */}
                         <Section
-                            title={t('sections.bonusContent')}
+                            title={`${t('sections.bonusContent')} (v2)`}
                             subtitle={t('sections.bonusContentSubtitle')}
                         >
                             {bonusProducts.map(product => (
