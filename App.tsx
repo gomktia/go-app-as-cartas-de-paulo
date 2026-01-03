@@ -43,6 +43,9 @@ function AppContent() {
     // Ref to track if this is the first render
     const isFirstRender = useRef(true);
 
+    // Raw products (source of truth from DB or Mock) to prevent translation loops
+    const [rawProducts, setRawProducts] = useState<Product[]>(PRODUCTS);
+
     // Modal State
     const [modalConfig, setModalConfig] = useState<{
         isOpen: boolean;
@@ -63,6 +66,7 @@ function AppContent() {
             if (error) {
                 console.error("❌ Erro ao buscar produtos do Supabase:", error.message);
                 setUsingDbData(false);
+                setRawProducts(PRODUCTS);
                 setProducts(PRODUCTS);
             } else if (data && data.length > 0) {
                 console.log(`✅ ${data.length} produtos carregados do banco de dados!`);
@@ -87,6 +91,7 @@ function AppContent() {
                     pdfUrl: p.pdfUrl?.substring(0, 60)
                 })));
                 setProducts(validProducts);
+                setRawProducts(validProducts);
 
                 // Extract Layout Config if exists (take the first one found)
                 const layoutConfig = mappedDbProducts.find(p => p.category === 'LAYOUT');
@@ -96,6 +101,7 @@ function AppContent() {
                 setUsingDbData(true);
             } else {
                 setProducts(PRODUCTS);
+                setRawProducts(PRODUCTS);
                 setUsingDbData(false);
             }
         } catch (err) {
@@ -108,6 +114,35 @@ function AppContent() {
     useEffect(() => {
         fetchProducts();
     }, []);
+
+    // Translate products when language changes OR when rawProducts update
+    useEffect(() => {
+        if (rawProducts.length > 0) {
+            if (language === 'pt') {
+                setProducts(rawProducts);
+            } else {
+                setTranslatingPdf(true); // Reusing this spinner or use a small customized indicator if needed, but for now it's fine
+                // actually translatingPdf shows a full screen overlay, maybe too intrusive for background translation?
+                // Let's just do it silently or use a different loading state if needed. 
+                // For now, silent update is better as initial load shows skeleton/loading.
+                translationService.translateProducts(rawProducts, language)
+                    .then(translated => setProducts(translated))
+                    .catch(err => console.error('Translation error:', err))
+                    .finally(() => setTranslatingPdf(false));
+            }
+        }
+    }, [language, rawProducts]);
+
+    // Reset to HOME view when language changes (better UX without reload)
+    useEffect(() => {
+        if (!isFirstRender.current && currentView !== 'HOME') {
+            console.log('🔄 Idioma mudou, voltando para HOME');
+            setCurrentView('HOME');
+            setSelectedBook(null);
+            setChapters([]);
+        }
+        isFirstRender.current = false;
+    }, [language]);
 
     // Filter products by category
     const letterProducts = products.filter(p => p.category === 'LETTER');
@@ -278,6 +313,8 @@ function AppContent() {
                     </div>
 
                     <div className="flex items-center gap-4">
+                        <LanguageSelector />
+
                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 cursor-pointer hover:bg-zinc-700 transition-colors">
                             <User className="w-4 h-4 text-zinc-400" />
                         </div>
