@@ -5,7 +5,6 @@ import Card from './components/Card';
 import Section from './components/Section';
 import UpgradeModal from './components/UpgradeModal';
 import AdminPanel from './components/AdminPanel';
-import LanguageSelector from './components/LanguageSelector';
 import { Product, Chapter } from './types';
 import { LayoutDashboard, LogOut, User, Database, Settings, ArrowLeft, Book, Library, FileText, Headphones, PlayCircle, X } from 'lucide-react';
 import { supabase } from './lib/supabaseClient';
@@ -339,8 +338,6 @@ function AppContent() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <LanguageSelector />
-
                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 cursor-pointer hover:bg-zinc-700 transition-colors">
                             <User className="w-4 h-4 text-zinc-400" />
                         </div>

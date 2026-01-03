@@ -16,22 +16,13 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
+  const [language, setLanguageState] = useState<Language>('es');
   const [translations, setTranslations] = useState<TranslationKeys | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load language preference from localStorage on mount
+  // Force language to always be Spanish
   useEffect(() => {
-    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
-    if (savedLanguage && ['pt', 'es', 'en', 'fr'].includes(savedLanguage)) {
-      setLanguageState(savedLanguage);
-    } else {
-      // Detect browser language
-      const browserLang = navigator.language.split('-')[0] as Language;
-      if (['pt', 'es', 'en', 'fr'].includes(browserLang)) {
-        setLanguageState(browserLang);
-      }
-    }
+    setLanguageState('es');
   }, []);
 
   // Load translations when language changes
