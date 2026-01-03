@@ -21,9 +21,9 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, children, actionButt
             <p className="text-zinc-500 mt-1 uppercase text-sm font-medium tracking-widest">{subtitle}</p>
           )}
         </div>
-        
+
         {actionButton && (
-          <button 
+          <button
             onClick={actionButton.onClick}
             className="group px-4 py-2 bg-transparent border border-brand-500 text-brand-500 hover:bg-brand-500 hover:text-white rounded transition-all duration-300 flex items-center gap-2 text-sm font-bold uppercase tracking-wide w-fit animate-pulse hover:animate-none"
           >
@@ -32,8 +32,8 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, children, actionButt
           </button>
         )}
       </div>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div className="flex overflow-x-auto snap-x snap-mandatory pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 scrollbar-hide">
         {children}
       </div>
     </section>

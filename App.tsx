@@ -13,6 +13,7 @@ import { LanguageProvider } from './i18n/LanguageContext';
 import { useTranslation } from './i18n/useTranslation';
 import { translationService } from './services/translationService';
 import { pdfStorageService } from './services/pdfStorageService';
+import AudioPlayerOverlay from './components/AudioPlayerOverlay';
 
 // View State Definition
 type ViewState = 'HOME' | 'COLLECTION' | 'CHAPTERS' | 'READER';
@@ -39,6 +40,7 @@ function AppContent() {
     const [usingDbData, setUsingDbData] = useState(false);
     const [translatingPdf, setTranslatingPdf] = useState(false);
     const [translationProgress, setTranslationProgress] = useState('');
+    const [activeAudio, setActiveAudio] = useState<{ title: string; subtitle?: string; url: string } | null>(null);
 
     // Ref to track if this is the first render
     const isFirstRender = useRef(true);
@@ -201,11 +203,28 @@ function AppContent() {
         setReadingDoc({ url: viewerUrl, title });
     };
 
-    const handleAudioClick = (product: Product) => {
-        if (product.audioUrl && product.audioUrl !== '#') {
-            window.open(product.audioUrl, '_blank');
+    const handleAudioClick = (e: React.MouseEvent, productOrChapter: Product | Chapter) => {
+        e.stopPropagation();
+
+        // Handle both prop types safely
+        let title = productOrChapter.title;
+        let subtitle = (productOrChapter as Product).subtitle;
+        let url: string | undefined;
+
+        if ('audioUrl' in productOrChapter) {
+            url = productOrChapter.audioUrl;
+        } else if ('audio_url' in productOrChapter) {
+            url = productOrChapter.audio_url;
+        }
+
+        if (url && url !== '#') {
+            setActiveAudio({
+                title,
+                subtitle,
+                url
+            });
         } else {
-            alert(t('alerts.audioUnavailable', { title: product.title }));
+            alert(t('alerts.audioUnavailable', { title }));
         }
     };
 
@@ -265,8 +284,15 @@ function AppContent() {
             // Treat as Single File
             const link = product.pdfUrl || product.audioUrl;
             if (link && link !== '#') {
-                if (product.pdfUrl) handlePdfClick(product);
-                else window.open(link, '_blank');
+                if (product.pdfUrl) {
+                    handlePdfClick(product);
+                } else if (product.audioUrl) {
+                    setActiveAudio({
+                        title: product.title,
+                        subtitle: product.subtitle,
+                        url: product.audioUrl
+                    });
+                }
             } else {
                 alert(t('alerts.contentNotRegistered', { title: product.title }));
             }
@@ -378,6 +404,7 @@ function AppContent() {
                                     onPdfClick={() => { }}
                                     onAudioClick={() => { }}
                                     onCardClick={handleFullCardClick}
+                                    className="w-[85vw] sm:w-auto shrink-0 snap-center"
                                 />
                             ))}
                         </Section>
@@ -395,6 +422,7 @@ function AppContent() {
                                     onPdfClick={() => { }}
                                     onAudioClick={() => { }}
                                     onCardClick={handleFullCardClick}
+                                    className="w-[85vw] sm:w-auto shrink-0 snap-center"
                                 />
                             ))}
                         </Section>
@@ -470,7 +498,7 @@ function AppContent() {
                                         )}
                                         {selectedBook.audioUrl && (
                                             <button
-                                                onClick={() => window.open(selectedBook.audioUrl, '_blank')}
+                                                onClick={() => setActiveAudio({ title: selectedBook.title, subtitle: selectedBook.subtitle, url: selectedBook.audioUrl! })}
                                                 className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded text-sm font-bold flex items-center gap-2 transition-colors"
                                             >
                                                 <Headphones className="w-4 h-4 text-brand-500" />
@@ -511,7 +539,7 @@ function AppContent() {
                                         <button
                                             onClick={() => {
                                                 if (chapter.audio_url && chapter.audio_url !== '#') {
-                                                    window.open(chapter.audio_url, '_blank');
+                                                    setActiveAudio({ title: chapter.title, subtitle: selectedBook.title, url: chapter.audio_url });
                                                 } else {
                                                     alert(t('alerts.chapterAudioNotRegistered'));
                                                 }
@@ -618,6 +646,15 @@ function AppContent() {
                 <AdminPanel
                     onClose={() => setShowAdmin(false)}
                     onSuccess={fetchProducts}
+                />
+            )}
+            {/* Audio Player Overlay */}
+            {activeAudio && (
+                <AudioPlayerOverlay
+                    title={activeAudio.title}
+                    subtitle={activeAudio.subtitle}
+                    audioUrl={activeAudio.url}
+                    onClose={() => setActiveAudio(null)}
                 />
             )}
         </div>
