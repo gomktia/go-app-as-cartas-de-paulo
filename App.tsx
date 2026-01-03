@@ -109,26 +109,6 @@ function AppContent() {
         fetchProducts();
     }, []);
 
-    // Translate products when language changes
-    useEffect(() => {
-        if (products.length > 0 && language !== 'pt') {
-            translationService.translateProducts(products, language)
-                .then(translated => setProducts(translated))
-                .catch(err => console.error('Translation error:', err));
-        }
-    }, [language]);
-
-    // Reset to HOME view when language changes (better UX without reload)
-    useEffect(() => {
-        if (!isFirstRender.current && currentView !== 'HOME') {
-            console.log('🔄 Idioma mudou, voltando para HOME');
-            setCurrentView('HOME');
-            setSelectedBook(null);
-            setChapters([]);
-        }
-        isFirstRender.current = false;
-    }, [language]);
-
     // Filter products by category
     const letterProducts = products.filter(p => p.category === 'LETTER');
     const bonusProducts = products.filter(p => p.category === 'BONUS');
@@ -298,8 +278,6 @@ function AppContent() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <LanguageSelector />
-
                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 cursor-pointer hover:bg-zinc-700 transition-colors">
                             <User className="w-4 h-4 text-zinc-400" />
                         </div>

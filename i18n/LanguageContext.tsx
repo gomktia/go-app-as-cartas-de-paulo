@@ -16,28 +16,15 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
+  // FIXED: Always use Spanish (es) - no language switching
+  const [language] = useState<Language>('es');
   const [translations, setTranslations] = useState<TranslationKeys | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load language preference from localStorage on mount
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
-    if (savedLanguage && ['pt', 'es', 'en', 'fr'].includes(savedLanguage)) {
-      setLanguageState(savedLanguage);
-    } else {
-      // Detect browser language
-      const browserLang = navigator.language.split('-')[0] as Language;
-      if (['pt', 'es', 'en', 'fr'].includes(browserLang)) {
-        setLanguageState(browserLang);
-      }
-    }
-  }, []);
-
-  // Load translations when language changes
+  // Load Spanish translations only
   useEffect(() => {
     setIsLoading(true);
-    loadTranslations(language)
+    loadTranslations('es')
       .then((trans) => {
         setTranslations(trans);
         setIsLoading(false);
@@ -45,11 +32,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       .catch(() => {
         setIsLoading(false);
       });
-  }, [language]);
+  }, []);
 
+  // Dummy setLanguage - does nothing since language is fixed
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    // Language is fixed to Spanish
+    console.log('Language is fixed to Spanish (es)');
   };
 
   return (
