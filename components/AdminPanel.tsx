@@ -259,10 +259,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSuccess }) => {
 
     const uploadFile = async (file: File, folderName: string) => {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-        const filePath = `${folderName}/${fileName}`;
+        // Usar nome do arquivo original para facilitar identificação
+        const fileName = file.name.toLowerCase().replace(/\s+/g, '-');
+        // Sempre usar pasta 'translated' para conteúdo em espanhol
+        const filePath = `translated/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage.from('files').upload(filePath, file);
+        const { error: uploadError } = await supabase.storage.from('pdfs').upload(filePath, file, { upsert: true });
 
         if (uploadError) {
             if (uploadError.message.includes('Bucket not found') || uploadError.message.includes('row-level security')) {
@@ -271,7 +273,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSuccess }) => {
             throw uploadError;
         }
 
-        const { data } = supabase.storage.from('files').getPublicUrl(filePath);
+        const { data } = supabase.storage.from('pdfs').getPublicUrl(filePath);
         return data.publicUrl;
     };
 
@@ -378,13 +380,15 @@ drop policy if exists "Public Write Chapters" on chapters;
 create policy "Public Read Chapters" on chapters for select using (true);
 create policy "Public Write Chapters" on chapters for all using (true) with check (true);
 
--- 5. Configuração do Storage
-insert into storage.buckets (id, name, public) values ('files', 'files', true) on conflict (id) do nothing;
-drop policy if exists "Public Access Files" on storage.objects;
-drop policy if exists "Public Upload Files" on storage.objects;
+-- 5. Configuração do Storage (PDFs e Áudios)
+insert into storage.buckets (id, name, public) values ('pdfs', 'pdfs', true) on conflict (id) do nothing;
+insert into storage.buckets (id, name, public) values ('audios', 'audios', true) on conflict (id) do nothing;
 
-create policy "Public Access Files" on storage.objects for select using ( bucket_id = 'files' );
-create policy "Public Upload Files" on storage.objects for insert with check ( bucket_id = 'files' );
+drop policy if exists "Public Access PDFs" on storage.objects;
+drop policy if exists "Public Upload PDFs" on storage.objects;
+
+create policy "Public Access PDFs" on storage.objects for select using ( bucket_id = 'pdfs' OR bucket_id = 'audios' );
+create policy "Public Upload PDFs" on storage.objects for all using ( bucket_id = 'pdfs' OR bucket_id = 'audios' ) with check ( bucket_id = 'pdfs' OR bucket_id = 'audios' );
 `.trim();
 
     const handleCopy = () => {
