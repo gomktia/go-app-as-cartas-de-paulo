@@ -392,7 +392,7 @@ function AppContent() {
                         </Section>
 
                         <Section
-                            title={`${t('sections.bonusContent')} (v2)`}
+                            title={t('sections.bonusContent')}
                             subtitle={t('sections.bonusContentSubtitle')}
                         >
                             {bonusProducts.map(product => (
