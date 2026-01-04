@@ -3,7 +3,7 @@
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
   "functions": {
-    "api/**/*.ts": {
+    "api/**/*.js": {
       "runtime": "@vercel/node@3.0.0"
     }
   }
