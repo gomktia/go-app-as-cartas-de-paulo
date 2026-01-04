@@ -37,7 +37,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSuccess }) => {
         category: 'LETTER' as ProductCategory,
         tier: PlanTier.BASIC,
         price: '',
-        isUpsell: false
+        isUpsell: false,
+        hotmartProductCode: ''
     });
 
     // Files & Links State
@@ -92,7 +93,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSuccess }) => {
             category: 'LETTER',
             tier: PlanTier.BASIC,
             price: '',
-            isUpsell: false
+            isUpsell: false,
+            hotmartProductCode: ''
         });
         setCoverFile(null); setCoverLink(''); setCoverMode('FILE');
         setPdfFile(null); setPdfLink(''); setPdfMode('FILE');
@@ -108,7 +110,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSuccess }) => {
             category: product.category,
             tier: product.tier,
             price: product.price ? product.price.toString() : '',
-            isUpsell: product.is_upsell
+            isUpsell: product.is_upsell,
+            hotmartProductCode: product.hotmart_product_code || ''
         });
 
         setCoverMode('LINK'); setCoverLink(product.image_url || '');
@@ -307,7 +310,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSuccess }) => {
                 is_upsell: formData.category === 'UPSELL',
                 image_url: finalImageUrl,
                 pdf_url: finalPdfUrl,
-                audio_url: finalAudioUrl
+                audio_url: finalAudioUrl,
+                hotmart_product_code: formData.hotmartProductCode || null
             };
 
             if (editingId) {
@@ -633,6 +637,27 @@ create policy "Public Upload PDFs" on storage.objects for all using ( bucket_id 
                                             <input type="number" step="0.01" name="price" value={formData.price} onChange={handleInputChange} disabled={formData.category !== 'UPSELL'} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white outline-none focus:border-brand-500 disabled:opacity-50" placeholder="0.00" />
                                         </div>
                                     </div>
+
+                                    {/* Campo Código Hotmart (apenas para UPSELL) */}
+                                    {formData.category === 'UPSELL' && (
+                                        <div className="bg-gradient-to-r from-orange-900/20 to-orange-800/20 border border-orange-900/50 rounded-lg p-4">
+                                            <label className="block text-sm font-medium text-orange-400 mb-2 flex items-center gap-2">
+                                                <ShoppingBag className="w-4 h-4" />
+                                                Código do Produto na Hotmart
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="hotmartProductCode"
+                                                value={formData.hotmartProductCode}
+                                                onChange={handleInputChange}
+                                                className="w-full bg-zinc-900 border border-orange-700/50 rounded-lg px-4 py-2 text-white outline-none focus:border-orange-500"
+                                                placeholder="Ex: 123456 ou abc-xyz-789"
+                                            />
+                                            <p className="text-xs text-orange-300/70 mt-2">
+                                                Cole aqui o ID/código do produto que a Hotmart gera. Será usado para validar acesso após a compra.
+                                            </p>
+                                        </div>
+                                    )}
 
                                     {/* LAYOUT Alert */}
                                     {formData.category === 'LAYOUT' && (
