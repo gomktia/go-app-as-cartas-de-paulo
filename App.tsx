@@ -40,6 +40,7 @@ function AppContent() {
     const [translatingPdf, setTranslatingPdf] = useState(false);
     const [translationProgress, setTranslationProgress] = useState('');
     const [activeAudio, setActiveAudio] = useState<{ title: string; subtitle?: string; url: string } | null>(null);
+    const [supabaseError, setSupabaseError] = useState<string | null>(null);
 
     // Ref to track if this is the first render
     const isFirstRender = useRef(true);
@@ -66,6 +67,7 @@ function AppContent() {
 
             if (error) {
                 console.error("❌ Erro ao buscar produtos do Supabase:", error.message);
+                setSupabaseError(error.message);
                 setUsingDbData(false);
                 setRawProducts(PRODUCTS);
                 setProducts(PRODUCTS);
@@ -313,7 +315,19 @@ function AppContent() {
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-brand-500/30 relative">
 
+
+    // ... existing code ...
+            {/* Debug Error Message - Only visible if there is a connection error */}
+            {supabaseError && (
+                <div className="fixed top-0 left-0 w-full bg-red-600 text-white p-4 z-50 text-center font-bold">
+                    ⚠️ ERRO DE CONEXÃO COM O BANCO DE DADOS: {supabaseError} <br />
+                    <span className="text-sm font-normal">URL: {import.meta.env.VITE_SUPABASE_URL || 'Using Fallback'} | KEY: {import.meta.env.VITE_SUPABASE_KEY ? 'Has Key' : 'No Key'}</span>
+                </div>
+            )}
+
             {/* Header */}
+            {/* ... existing code ... */}
+
             <header className="sticky top-0 z-30 w-full border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
